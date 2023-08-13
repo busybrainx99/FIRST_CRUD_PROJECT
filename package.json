@@ -10,7 +10,8 @@
     "start": "npm run build && node ./build/server.js",
     "dev": "cross-env NODE_ENV=development nodemon --exec babel-node ./src/server.js",
     "test": "cross-env NODE_ENV=test && nyc --require --reporter=html --reporter=text mocha -r @babel/register ./src/tests/index.js  --timeout 10000 --recursive --exit || true",
-    "coverage": "nyc npm run test && nyc report --reporter=text-lcov --reporter=lcov | node ./node_modules/coveralls/bin/coveralls.js --verbose"
+    "coverage": "nyc npm run test && nyc report --reporter=text-lcov --reporter=lcov"
+    
   },
   "keywords": [],
   "author": "",
