@@ -1,41 +1,92 @@
 name: Node.js CI
-
-on: ["push"]
-
+'on':
+  - push
 jobs:
   build:
     name: Build
-
     runs-on: ubuntu-latest
-
     strategy:
       matrix:
-        node-version: [18.x, 20.x]
-        mongodb-version: [6.0]
-
+        node-version:
+          - 16.x
+          - 18.x
+        mongodb-version:
+          - 6.0
     steps:
-    - uses: actions/checkout@v3
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v3
-      with:
-        node-version: ${{ matrix.node-version }}
+      - uses: actions/checkout@v3
+      - name: 'Use Node.js ${{ matrix.node-version }}'
+        uses: actions/setup-node@v3
+        with:
+          node-version: '${{ matrix.node-version }}'
+      - name: Start MongoDB
+        uses: supercharge/mongodb-github-action@1.2.0
+        with:
+          mongodb-version: '${{ matrix.mongodb-version }}'
+      - run: npm install
+      - run: npm run build --if-present
+      - run: npm run coverage
+        env:
+          CI: true
+          NODE_ENV: test
+          TEST_MONGO_URI: 'mongodb://localhost:27017/ActionTtest'
+      - name: Coveralls GitHub Action
+        uses: coverallsapp/github-action@v2
+        with:
+          github-token: '${{ secrets.GITHUB_TOKEN }}'
 
-    - name: Start MongoDB
-      uses: supercharge/mongodb-github-action@1.2.0
-      with:
-        mongodb-version: ${{ matrix.mongodb-version }}
 
 
-    - run: npm install
-    - run: npm run build --if-present
 
-    - run: npm run test
-      env:  
-        CI: true
-        NODE_ENV: test
-        TEST_MONGO_URI: mongodb://localhost:27017/ActionTtest
 
-    - name: Coveralls GitHub Action
-      uses: coverallsapp/github-action@v2
-      with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
+
+
+
+
+
+
+
+
+
+
+
+# name: Node.js CI
+
+# on: ["push"]
+
+# jobs:
+#   build:
+#     name: Build
+
+#     runs-on: ubuntu-latest
+
+#     strategy:
+#       matrix:
+#         node-version: [18.x, 20.x]
+#         mongodb-version: [6.0]
+
+#     steps:
+#     - uses: actions/checkout@v3
+#     - name: Use Node.js ${{ matrix.node-version }}
+#       uses: actions/setup-node@v3
+#       with:
+#         node-version: ${{ matrix.node-version }}
+
+#     - name: Start MongoDB
+#       uses: supercharge/mongodb-github-action@1.2.0
+#       with:
+#         mongodb-version: ${{ matrix.mongodb-version }}
+
+
+#     - run: npm install
+#     - run: npm run build --if-present
+
+#     - run: npm run test
+#       env:  
+#         CI: true
+#         NODE_ENV: test
+#         TEST_MONGO_URI: mongodb://localhost:27017/ActionTtest
+
+#     - name: Coveralls GitHub Action
+#       uses: coverallsapp/github-action@v2
+#       with:
+#         github-token: ${{ secrets.GITHUB_TOKEN }}
