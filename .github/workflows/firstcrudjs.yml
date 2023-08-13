@@ -29,8 +29,8 @@ jobs:
           CI: true
           NODE_ENV: test
           TEST_MONGO_URI: 'mongodb://localhost:27017/ActionTtest'
-      - name: Coveralls GitHub Action
-        uses: coverallsapp/github-action@v2
+      - name: Coveralls
+        uses: coverallsapp/github-action@master
         with:
           github-token: '${{ secrets.GITHUB_TOKEN }}'
 
